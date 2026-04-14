@@ -29,7 +29,23 @@ const RED = "\x1b[91m";
 const DIM = "\x1b[2m";
 const RESET = "\x1b[0m";
 
+// ─── Spinner ─────────────────────────────────────────────────────────────────
 
+const SPINNER_FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
+function startSpinner(label: string): NodeJS.Timeout {
+  let i = 0;
+  return setInterval(() => {
+    process.stdout.write(
+      `\r${DIM}${SPINNER_FRAMES[i++ % SPINNER_FRAMES.length]} ${label}${RESET}`
+    );
+  }, 80);
+}
+
+function stopSpinner(timer: NodeJS.Timeout): void {
+  clearInterval(timer);
+  process.stdout.write('\r\x1b[2K');
+}
 
 // ─── System Prompt ───────────────────────────────────────────────────────────
 
@@ -73,6 +89,7 @@ async function runAgentLoop() {
 
     // ── Inner loop: call LLM, execute tools, repeat until text-only ──────
     while (true) {
+      const spinner = startSpinner('Thinking…');
       const response = await client.messages.create({
         model: MODEL,
         max_tokens: MAX_TOKENS,
@@ -80,6 +97,7 @@ async function runAgentLoop() {
         tools,
         messages,
       });
+      stopSpinner(spinner);
 
       // Collect tool_use blocks from the response
       const toolUseBlocks = response.content.filter(
