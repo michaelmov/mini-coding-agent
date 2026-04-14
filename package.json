@@ -1,0 +1,21 @@
+{
+  "name": "mini-coding-agent",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsx agent.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
