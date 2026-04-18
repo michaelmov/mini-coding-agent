@@ -1,31 +1,23 @@
 /**
  * Mini Coding Agent
  *
- * A minimal Claude-like coding assistant in a single file.
- * Demonstrates the core agentic loop: user input -> LLM decides tool calls ->
- * local code executes them -> results feed back to LLM -> repeat.
+ * A minimal Claude-like coding assistant. Demonstrates the core agentic loop:
+ * user input -> LLM decides tool calls -> local code executes them ->
+ * results feed back to LLM -> repeat.
  *
  * Inspired by: https://www.mihaileric.com/The-Emperor-Has-No-Clothes/
  */
 
 import Anthropic from "@anthropic-ai/sdk";
-import { config } from "dotenv";
 import * as readline from "node:readline";
 import { tools, executeTool } from "./tools";
 
-config(); // Load .env
-
-// ─── Anthropic Client ────────────────────────────────────────────────────────
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const MODEL = "claude-sonnet-4-20250514";
 const MAX_TOKENS = 4096;
 
 // ─── Terminal Colors ─────────────────────────────────────────────────────────
 
 const BLUE = "\x1b[94m";
 const YELLOW = "\x1b[93m";
-const RED = "\x1b[91m";
 const DIM = "\x1b[2m";
 const RESET = "\x1b[0m";
 
@@ -61,7 +53,14 @@ Be concise in your responses.`;
 
 // ─── The Agentic Loop ────────────────────────────────────────────────────────
 
-async function runAgentLoop() {
+export interface AgentOptions {
+  apiKey: string;
+  model: string;
+}
+
+export async function runAgentLoop({ apiKey, model }: AgentOptions): Promise<void> {
+  const client = new Anthropic({ apiKey });
+
   // Conversation history sent to the API on every turn
   const messages: Anthropic.Messages.MessageParam[] = [];
 
@@ -91,7 +90,7 @@ async function runAgentLoop() {
     while (true) {
       const spinner = startSpinner('Thinking…');
       const response = await client.messages.create({
-        model: MODEL,
+        model,
         max_tokens: MAX_TOKENS,
         system: SYSTEM_PROMPT,
         tools,
@@ -163,10 +162,3 @@ async function runAgentLoop() {
     console.log(); // blank line between turns
   }
 }
-
-// ─── Entry Point ─────────────────────────────────────────────────────────────
-
-runAgentLoop().catch((err) => {
-  console.error(`${RED}Fatal error:${RESET}`, err.message);
-  process.exit(1);
-});

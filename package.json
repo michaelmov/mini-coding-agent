@@ -1,17 +1,44 @@
 {
   "name": "mini-coding-agent",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "tsx agent.ts"
+  "version": "0.1.0",
+  "description": "A minimal Claude-powered coding agent that lives in your terminal.",
+  "bin": {
+    "mini-agent": "dist/cli.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "dev": "tsx cli.ts",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "claude",
+    "anthropic",
+    "coding-agent",
+    "ai",
+    "cli",
+    "agent"
+  ],
+  "author": "Michael Movsesov",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelmov/mini-coding-agent.git"
+  },
+  "homepage": "https://github.com/michaelmov/mini-coding-agent#readme",
+  "bugs": {
+    "url": "https://github.com/michaelmov/mini-coding-agent/issues"
+  },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.88.0",
-    "dotenv": "^17.4.2"
+    "@anthropic-ai/sdk": "^0.88.0"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
